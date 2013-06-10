@@ -56,9 +56,8 @@ public class HMount implements HCommand {
         String DIR_NAME = argument.get(DIR_OPTION);
         String FILE_NAME = DIR_NAME + "/cluster.json";
         File dir = new File(DIR_NAME);
-        boolean hadoopDir = dir.mkdir();
-        if (!hadoopDir) {
-            throw new RuntimeException("Failed to create a hadoop dir at " + dir.getAbsolutePath());
+        if (!dir.exists()) {
+            createWorkingDirectory(dir);
         }
         try {
             File jsonFile = new File(FILE_NAME);
@@ -68,6 +67,13 @@ public class HMount implements HCommand {
             fileWriter.flush();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void createWorkingDirectory(File dir) {
+        boolean hadoopDir = dir.mkdir();
+        if (!hadoopDir) {
+            throw new RuntimeException("Failed to create a hadoop dir at " + dir.getAbsolutePath());
         }
     }
 
