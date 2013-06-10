@@ -34,5 +34,9 @@ public class ClusterClient {
         }
         return clusterStatus.getActiveTrackerNames();
     }
+
+    public String getJobTrackerName() {
+        return jobTrackerAddress;
+    }
 }
 
