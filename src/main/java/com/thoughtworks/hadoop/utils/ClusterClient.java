@@ -11,24 +11,24 @@ import java.util.Collection;
 public class ClusterClient {
     private String jobTrackerAddress;
     private int portNumber;
-    private final JobClient jobClient;
 
     public ClusterClient(String jobTrackerAddress, int portNumber) {
         this.jobTrackerAddress = jobTrackerAddress;
         this.portNumber = portNumber;
+    }
 
+    private JobClient getJobClient() {
         try {
-            jobClient = new JobClient(new InetSocketAddress(this.jobTrackerAddress, this.portNumber), new Configuration());
+            return new JobClient(new InetSocketAddress(this.jobTrackerAddress, this.portNumber), new Configuration());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public Collection<String> getTaskTrackerNames() {
         ClusterStatus clusterStatus = null;
         try {
-            clusterStatus = jobClient.getClusterStatus();
+            clusterStatus = getJobClient().getClusterStatus(true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

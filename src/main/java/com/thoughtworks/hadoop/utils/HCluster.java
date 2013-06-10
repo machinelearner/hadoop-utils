@@ -8,7 +8,7 @@ import java.io.IOException;
 public class HCluster implements HCommand {
 
     public static final String DIR_OPTION = "f";
-    public static final String DEFAULT_DIR = "~/.hadoop";
+    public static final String DEFAULT_DIR = System.getProperty("user.home") + "/.hadoop";
 
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
@@ -31,5 +31,10 @@ public class HCluster implements HCommand {
             hCommandArgument.put(DIR_OPTION, DEFAULT_DIR);
         }
         return hCommandArgument;
+    }
+
+    public static void main(String[] args) {
+
+
     }
 }

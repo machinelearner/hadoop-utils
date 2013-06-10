@@ -9,10 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class HMount implements HCommand {
     public static final String DIR_OPTION = "f";
-    public static final String DEFAULT_DIR = "~/.hadoop";
+    public static final String DEFAULT_DIR = System.getProperty("user.home") + "/.hadoop";
     private ClusterClient clusterClient;
 
 
@@ -23,7 +24,7 @@ public class HMount implements HCommand {
 
     public Collection<String> getTaskTrackerNames() {
         Collection<String> taskTrackerNames = clusterClient.getTaskTrackerNames();
-        ArrayList<String> taskTrackers = new ArrayList<String>();
+        List<String> taskTrackers = new ArrayList<String>();
         for (String ttName : taskTrackerNames) {
             taskTrackers.add(this.getHostNameFromTaskTrackerName(ttName));
         }
@@ -54,9 +55,10 @@ public class HMount implements HCommand {
     private void writeClusterDetails(String clusterDetails, HCommandArgument argument) {
         String DIR_NAME = argument.get(DIR_OPTION);
         String FILE_NAME = DIR_NAME + "/cluster.json";
-        boolean hadoopDir = new File(DIR_NAME).mkdir();
+        File dir = new File(DIR_NAME);
+        boolean hadoopDir = dir.mkdir();
         if (!hadoopDir) {
-            throw new RuntimeException("Failed to create a hadoop dir");
+            throw new RuntimeException("Failed to create a hadoop dir at " + dir.getAbsolutePath());
         }
         try {
             File jsonFile = new File(FILE_NAME);
@@ -80,8 +82,9 @@ public class HMount implements HCommand {
 
     public static void main(String[] args) {
         HCommandArgument argument = HCommandArgument.create(args, HMount.options());
-
-        new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("p"))).execute(argument);
+        HMount mount = new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("p")));
+        HCommandOutput output = mount.execute(argument);
+        System.out.println(output.getOutput());
     }
 
     public static Options options() {
