@@ -7,10 +7,13 @@ import java.io.IOException;
 
 public class HCluster implements HCommand {
 
+    public static final String DIR_OPTION = "f";
+    public static final String DEFAULT_DIR = "~/.hadoop";
+
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
         applyDefaults(hCommandArgument);
-        String dir = hCommandArgument.get("-f");
+        String dir = hCommandArgument.get(DIR_OPTION);
         String file = dir + "/cluster.json";
         String json;
         try {
@@ -23,9 +26,9 @@ public class HCluster implements HCommand {
 
 
     private HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
-        String hadoopHomeDir = hCommandArgument.get("-f");
+        String hadoopHomeDir = hCommandArgument.get(DIR_OPTION);
         if (hadoopHomeDir == null) {
-            hCommandArgument.put("-f", "~/.hadoop");
+            hCommandArgument.put(DIR_OPTION, DEFAULT_DIR);
         }
         return hCommandArgument;
     }

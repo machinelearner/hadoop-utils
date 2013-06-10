@@ -2,6 +2,7 @@ package com.thoughtworks.hadoop.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.apache.commons.cli.Options;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class HMount implements HCommand {
+    public static final String DIR_OPTION = "f";
+    public static final String DEFAULT_DIR = "~/.hadoop";
     private ClusterClient clusterClient;
 
 
@@ -41,15 +44,15 @@ public class HMount implements HCommand {
     }
 
     private HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
-        String hadoopHomeDir = hCommandArgument.get("-f");
+        String hadoopHomeDir = hCommandArgument.get(DIR_OPTION);
         if (hadoopHomeDir == null) {
-            hCommandArgument.put("-f", "~/.hadoop");
+            hCommandArgument.put(DIR_OPTION, DEFAULT_DIR);
         }
         return hCommandArgument;
     }
 
     private void writeClusterDetails(String clusterDetails, HCommandArgument argument) {
-        String DIR_NAME = argument.get("-f");
+        String DIR_NAME = argument.get(DIR_OPTION);
         String FILE_NAME = DIR_NAME + "/cluster.json";
         boolean hadoopDir = new File(DIR_NAME).mkdir();
         if (!hadoopDir) {
@@ -73,5 +76,19 @@ public class HMount implements HCommand {
         clusterDetails.addProperty("taskTrackers", taskTrackers);
         clusterDetails.addProperty("jobTracker", jobTracker);
         return clusterDetails.toString();
+    }
+
+    public static void main(String[] args) {
+        HCommandArgument argument = HCommandArgument.create(args, HMount.options());
+
+        new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("p"))).execute(argument);
+    }
+
+    public static Options options() {
+        Options options = new Options();
+        options.addOption(DIR_OPTION, "home-dir", false, "Home dir to store hadoop Util configurations");
+        options.addOption("j", "job-tracker", true, "Job Tracker HostName");
+        options.addOption("p", "port-number", true, "Port Number of Job Tracker");
+        return options;
     }
 }

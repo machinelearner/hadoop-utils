@@ -28,12 +28,12 @@ public class HMountTest {
         mockClient = mock(ClusterClient.class);
         hMount = new HMount(mockClient);
         argument = new HCommandArgument();
-        argument.put("-f", "./hadoop");
+        argument.put("f", "./hadoop");
     }
 
     @After
     public void tearDown() throws Exception {
-        String dir_name = argument.get("-f");
+        String dir_name = argument.get("f");
         File hadoopDir = new File(dir_name);
         FileUtils.deleteDirectory(hadoopDir);
 

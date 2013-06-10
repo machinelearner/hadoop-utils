@@ -34,7 +34,7 @@ public class HClusterTest {
     public void setUp() {
         hCommandArgument = new HCommandArgument();
         String DIR = "./hadoop";
-        hCommandArgument.put("-f", DIR);
+        hCommandArgument.put("f", DIR);
         List<String> expectedTaskTrackerNames = Arrays.asList("hadoop01.com", "hadoop02.com");
         String jobTrackerName = "jobtracker.hadoop.com";
 
@@ -56,10 +56,9 @@ public class HClusterTest {
 
     @After
     public void tearDown() throws Exception {
-        String dir_name = hCommandArgument.get("-f");
+        String dir_name = hCommandArgument.get("f");
         File hadoopDir = new File(dir_name);
         FileUtils.deleteDirectory(hadoopDir);
-
     }
 
     @Test
