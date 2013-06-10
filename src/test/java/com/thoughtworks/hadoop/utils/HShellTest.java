@@ -13,6 +13,5 @@ public class HShellTest {
         hShell.start();
         HMount command = new HMount(null);
         hShell.execute(command);
-        Assert.assertTrue(command.wasSuccessful());
     }
 }

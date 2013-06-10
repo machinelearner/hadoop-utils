@@ -23,23 +23,6 @@ public class HMountTest {
     private HMount hMount;
     private HCommandArgument argument;
 
-//
-//    @Test
-//    public void shouldNotFailToConnectToJobTracker() throws IOException {
-//        HMount hMount = new HMount("hadoop01.utils.com", 23456);
-//        JobClient jobClient = mock(JobClient.class);
-//        // need to mock InetAddress and what not
-//        Collection<String> listOfTaskTracker = new ArrayList<String>();
-//        listOfTaskTracker.add("hadoop01.utils.com:23456");
-//        listOfTaskTracker.add("hadoop02.utils.com:12345");
-//        ClusterStatus clusterStatus = mock(ClusterStatus.class);
-//        when(jobClient.getClusterStatus(true)).thenReturn(clusterStatus);
-//        when(clusterStatus.getActiveTrackerNames()).thenReturn(listOfTaskTracker);
-//
-//        TestCase.assertEquals(listOfTaskTracker.size(), hMount.getTaskTrackerNames().size());
-//
-//    }
-
     @Before
     public void setUp() throws Exception {
         mockClient = mock(ClusterClient.class);
@@ -76,8 +59,8 @@ public class HMountTest {
 
     @Test
     public void shouldExecuteCommandAndGetClusterDetails() {
-        List<String> actualTaskTrackerNames = Arrays.asList("tracker_hadoop01.com:bla.bla", "tracker_hadoop02.com:localhost:localhost");
         List<String> expectedTaskTrackerNames = Arrays.asList("hadoop01.com", "hadoop02.com");
+        List<String> actualTaskTrackerNames = Arrays.asList("tracker_hadoop01.com:bla.bla", "tracker_hadoop02.com:localhost:localhost");
         String jobTrackerName = "jobtracker.hadoop.com";
 
         when(mockClient.getTaskTrackerNames()).thenReturn(actualTaskTrackerNames);

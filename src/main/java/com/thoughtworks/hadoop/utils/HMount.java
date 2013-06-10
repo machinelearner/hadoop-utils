@@ -31,12 +31,6 @@ public class HMount implements HCommand {
         return HostnameParser.fromTaskTrackerName(taskTrackerName);
     }
 
-
-    @Override
-    public boolean wasSuccessful() {
-        return false;
-    }
-
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
         Collection<String> taskTrackerNames = getTaskTrackerNames();
@@ -78,7 +72,6 @@ public class HMount implements HCommand {
         String taskTrackers = gson.toJson(taskTrackerNames);
         clusterDetails.addProperty("taskTrackers", taskTrackers);
         clusterDetails.addProperty("jobTracker", jobTracker);
-
         return clusterDetails.toString();
     }
 }
