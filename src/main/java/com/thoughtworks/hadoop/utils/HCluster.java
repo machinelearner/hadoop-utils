@@ -1,5 +1,6 @@
 package com.thoughtworks.hadoop.utils;
 
+import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -9,12 +10,13 @@ public class HCluster implements HCommand {
 
     public static final String DIR_OPTION = "f";
     public static final String DEFAULT_DIR = System.getProperty("user.home") + "/.hadoop";
+    private String clusterDetailsFile = "/cluster.json";
 
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
         applyDefaults(hCommandArgument);
         String dir = hCommandArgument.get(DIR_OPTION);
-        String file = dir + "/cluster.json";
+        String file = dir + clusterDetailsFile;
         String json;
         try {
             json = FileUtils.readFileToString(new File(file));
@@ -33,8 +35,16 @@ public class HCluster implements HCommand {
         return hCommandArgument;
     }
 
+    public static Options options() {
+        Options options = new Options();
+        options.addOption(DIR_OPTION, "home-dir", false, "Home dir to store hadoop Util configurations");
+        return options;
+    }
+
     public static void main(String[] args) {
-
-
+        HCommandArgument argument = HCommandArgument.create(args, HCluster.options());
+        HCluster hCluster = new HCluster();
+        HCommandOutput output = hCluster.execute(argument);
+        System.out.println(output.getOutput());
     }
 }
