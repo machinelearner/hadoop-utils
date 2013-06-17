@@ -18,6 +18,13 @@ public class HCommandOutput {
         return output;
     }
 
+    public boolean isSuccess() {
+        if (this.getResult() == Result.SUCCESS) {
+            return true;
+        }
+        return false;
+    }
+
     static enum Result {
         SUCCESS, FAILURE
     }

@@ -1,5 +1,7 @@
 package com.thoughtworks.hadoop.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 
@@ -21,13 +23,25 @@ public class HCluster implements HCommand {
         try {
             json = FileUtils.readFileToString(new File(file));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return new HCommandOutput(HCommandOutput.Result.FAILURE, "");
         }
         return new HCommandOutput(HCommandOutput.Result.SUCCESS, json);
     }
 
+    public ClusterClient getClusterClient(HCommandArgument hCommandArgument) {
+        //TODO functional
+        HCommandOutput commandOutput = execute(hCommandArgument);
+        if (commandOutput.isSuccess()) {
+            String clusterJson = commandOutput.getOutput();
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(clusterJson, JsonObject.class);
+            return new ClusterClient(jsonObject.get("jobTracker").getAsString(), jsonObject.get("jobTrackerPort").getAsInt(), jsonObject.get("nameNode").getAsString(), jsonObject.get("nameNodePort").getAsInt());
+        }
+        throw new RuntimeException("Cluster not found. Please mount a cluster before executing any command.");
 
-    private HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
+    }
+
+    public HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
         String hadoopHomeDir = hCommandArgument.get(DIR_OPTION);
         if (hadoopHomeDir == null) {
             hCommandArgument.put(DIR_OPTION, DEFAULT_DIR);

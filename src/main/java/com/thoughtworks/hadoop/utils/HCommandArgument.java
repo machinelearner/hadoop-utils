@@ -36,4 +36,8 @@ public class HCommandArgument {
     public int getAsInt(String key) {
         return Integer.parseInt(arguments.get(key));
     }
+
+    public boolean hasArgument(String key) {
+        return arguments.containsKey(key);
+    }
 }

@@ -7,7 +7,9 @@ import org.apache.commons.cli.Options;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class HMount implements HCommand {
     public static final String DIR_OPTION = "f";
@@ -42,8 +44,10 @@ public class HMount implements HCommand {
         Collection<String> taskTrackerNames = getTaskTrackerNames();
         String jobTracker = clusterClient.getJobTrackerName();
         String nameNode = clusterClient.getNameNodeName();
+        int jtPortNumber = clusterClient.getJtPortNumber();
+        int nnPortNumber = clusterClient.getNnPortNumber();
         Collection<String> dataNodes = clusterClient.getDataNodes();
-        JsonObject allDetails = allDetailsAsJson(jobTracker, taskTrackerNames, nameNode, dataNodes);
+        JsonObject allDetails = allDetailsAsJson(jobTracker, jtPortNumber, taskTrackerNames, nameNode, nnPortNumber, dataNodes);
         String clusterDetails = allDetails.toString();
         writeClusterDetails(clusterDetails, applyDefaults(hCommandArgument));
         return new HCommandOutput(HCommandOutput.Result.SUCCESS, clusterDetails);
@@ -52,14 +56,14 @@ public class HMount implements HCommand {
 
     private static void handleSuperUserOverride(HCommandArgument hCommandArgument) {
         String superUser = hCommandArgument.get("u");
-        if(superUser != null){
+        if (superUser != null) {
             System.setProperty("HADOOP_USER_NAME", superUser);
         }
     }
 
-    private HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
-        String hadoopHomeDir = hCommandArgument.get(DIR_OPTION);
-        if (hadoopHomeDir == null) {
+    public HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
+
+        if (!hCommandArgument.hasArgument(DIR_OPTION)) {
             hCommandArgument.put(DIR_OPTION, DEFAULT_DIR);
         }
         return hCommandArgument;
@@ -90,21 +94,23 @@ public class HMount implements HCommand {
         }
     }
 
-    private JsonObject allDetailsAsJson(String jobTracker, Collection<String> taskTrackerNames,String nameNode, Collection<String> dataNodes) {
+    private JsonObject allDetailsAsJson(String jobTracker, int jtPortNumber, Collection<String> taskTrackerNames, String nameNode, int nnPortNumber, Collection<String> dataNodes) {
         Gson gson = new Gson();
         JsonObject allDetails = new JsonObject();
         String taskTrackers = gson.toJson(taskTrackerNames);
         allDetails.addProperty("taskTrackers", taskTrackers);
         allDetails.addProperty("jobTracker", jobTracker);
+        allDetails.addProperty("jobTrackerPort", jtPortNumber);
         String dataNodeJson = gson.toJson(dataNodes);
         allDetails.addProperty("dataNodes", dataNodeJson);
         allDetails.addProperty("nameNode", nameNode);
+        allDetails.addProperty("nameNodePort", nnPortNumber);
         return allDetails;
     }
 
     public static Options options() {
         Options options = new Options();
-        options.addOption(DIR_OPTION, "home-dir", false, "Home dir to store hadoop Util configurations");
+        options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
         options.addOption("j", "job-tracker", true, "Job Tracker HostName");
         options.addOption("n", "name-node", true, "Name Node HostName");
         options.addOption("jp", "jobtracker-port-number", true, "Port Number of Job Tracker");
@@ -114,9 +120,9 @@ public class HMount implements HCommand {
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, HMount.options());
+        HCommandArgument argument = HCommandArgument.create(args, options());
         handleSuperUserOverride(argument);
-        HMount mount = new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("jp"),argument.get("n"),argument.getAsInt("np")));
+        HMount mount = new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("jp"), argument.get("n"), argument.getAsInt("np")));
         HCommandOutput output = mount.execute(argument);
         System.out.println(output.getOutput());
     }
