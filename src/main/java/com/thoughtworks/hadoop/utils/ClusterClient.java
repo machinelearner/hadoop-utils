@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 public class ClusterClient {
     public static final String INVALID_JOB_ID = "Invalid Job Id";
     private String jobTrackerAddress;
@@ -161,6 +162,13 @@ public class ClusterClient {
             throw new RuntimeException(INVALID_JOB_ID);
         }
         job.killJob();
+
+    }
+
+    public void killTask(String taskAttemptId) throws Exception {
+        // Bad API version; Cannot do anything better; Les Horribles
+        String[] args = {"job", "-kill-task", taskAttemptId};
+        jobClient.run(args);
     }
 }
 

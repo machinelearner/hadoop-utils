@@ -37,8 +37,21 @@ public class HKill {
             killAJob(jobId, clusterClient);
             return new HCommandOutput(HCommandOutput.Result.SUCCESS, jobId);
         }
+        if (argument.hasArgument("task")) {
+            String taskId = argument.get("task");
+            killATask(taskId, clusterClient);
+            return new HCommandOutput(HCommandOutput.Result.SUCCESS, taskId);
+        }
 
         return new HCommandOutput(HCommandOutput.Result.FAILURE, INVALID_EXECUTION);
+    }
+
+    private void killATask(String taskId, ClusterClient clusterClient) {
+        try {
+            clusterClient.killTask(taskId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void killAJob(String job, ClusterClient clusterClient) {
@@ -60,7 +73,7 @@ public class HKill {
         options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
         options.addOption("u", "super-user", true, "Super User to execute admin commands");
         options.addOption("job", "job", true, "Job Id of job to be killed");
-        options.addOption("task", "task", true, "Task Id of task to be killed");
+        options.addOption("task-attempt", "task-attempt", true, "Task Attempt Id of task attempt to be killed");
         return options;
     }
 
