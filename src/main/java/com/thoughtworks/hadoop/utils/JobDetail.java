@@ -58,9 +58,8 @@ public class JobDetail {
         listOfFields.add(String.valueOf(reduceProgress));
         listOfFields.add((new Timestamp(startTime)).toString());
         listOfFields.add(state);
-        String formattedString = StringUtils.join(listOfFields, DELIMITER_STRING);
 
-        return formattedString;
+        return StringUtils.join(listOfFields, DELIMITER_STRING);
     }
 
     public static String formattedHeader() {

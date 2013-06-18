@@ -27,7 +27,7 @@ public class HJobStat implements HCommand {
     }
 
 
-    private static void handleSuperUserOverride(HCommandArgument hCommandArgument) {
+    private void handleSuperUserOverride(HCommandArgument hCommandArgument) {
         String superUser = hCommandArgument.get("u");
         if (superUser != null) {
             System.setProperty("HADOOP_USER_NAME", superUser);
@@ -36,12 +36,13 @@ public class HJobStat implements HCommand {
 
 
     @Override
-    public HCommandArgument applyDefaults(HCommandArgument hCommandArgument) {
-        if (!hCommandArgument.hasArgument("r") && !hCommandArgument.hasArgument("re") && !hCommandArgument.hasArgument("c") && !hCommandArgument.hasArgument("a")) {
-            hCommandArgument.put("a", "");
+    public HCommandArgument applyDefaults(HCommandArgument argument) {
+        handleSuperUserOverride(argument);
+        if (!argument.hasArgument("r") && !argument.hasArgument("re") && !argument.hasArgument("c") && !argument.hasArgument("a")) {
+            argument.put("a", "");
         }
 
-        return hCommandArgument;
+        return argument;
     }
 
     @Override
@@ -82,7 +83,6 @@ public class HJobStat implements HCommand {
 
     public static void main(String[] args) {
         HCommandArgument argument = HCommandArgument.create(args, options());
-        handleSuperUserOverride(argument);
         HJobStat hJobStat = new HJobStat();
         HCommandOutput commandOutput = hJobStat.execute(argument);
         System.out.println(JobDetail.formattedHeader());

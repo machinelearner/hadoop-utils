@@ -8,6 +8,7 @@ import org.apache.hadoop.mapred.ClusterStatus;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.RunningJob;
+import org.apache.hadoop.mapreduce.JobID;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class ClusterClient {
+    public static final String INVALID_JOB_ID = "Invalid Job Id";
     private String jobTrackerAddress;
     private String nameNodeAddress;
     private int jtPortNumber;
@@ -145,5 +147,20 @@ public class ClusterClient {
         return jobDetails;
     }
 
+    public RunningJob getJob(JobID jobID) {
+        try {
+            return jobClient.getJob((org.apache.hadoop.mapred.JobID) jobID);
+        } catch (IOException e) {
+            throw new RuntimeException(INVALID_JOB_ID);
+        }
+    }
+
+    public void killJob(JobID jobID) throws IOException {
+        RunningJob job = jobClient.getJob((org.apache.hadoop.mapred.JobID) jobID);
+        if (job == null) {
+            throw new RuntimeException(INVALID_JOB_ID);
+        }
+        job.killJob();
+    }
 }
 

@@ -18,25 +18,25 @@ public class HJobStatTest {
     @Test
     public void shouldFetchCompletedJobDetailsFromCluster() {
         argument.put("c", "");
-        HCommandOutput execute = new HJobStat().execute(argument);
+        HCommandOutput commandOutput = new HJobStat().execute(argument);
         System.out.println(JobDetail.formattedHeader());
-        System.out.println(execute.getOutput());
+        System.out.println(commandOutput.getOutput());
     }
 
     @Test
     public void shouldFetchRunningJobDetailsFromCluster() {
         argument.put("r", "");
-        HCommandOutput execute = new HJobStat().execute(argument);
+        HCommandOutput commandOutput = new HJobStat().execute(argument);
         System.out.println(JobDetail.formattedHeader());
-        System.out.println(execute.getOutput());
+        System.out.println(commandOutput.getOutput());
     }
 
     @Test
     public void shouldFetchAllJobDetailsFromCluster() {
         argument.put("a", "");
-        HCommandOutput execute = new HJobStat().execute(argument);
+        HCommandOutput commandOutput = new HJobStat().execute(argument);
         System.out.println(JobDetail.formattedHeader());
-        System.out.println(execute.getOutput());
+        System.out.println(commandOutput.getOutput());
     }
 
 
