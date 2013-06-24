@@ -122,7 +122,9 @@ public class HMount implements HCommand {
     public static void main(String[] args) {
         HCommandArgument argument = HCommandArgument.create(args, options());
         handleSuperUserOverride(argument);
-        HMount mount = new HMount(new ClusterClient(argument.get("j"), argument.getAsInt("jp"), argument.get("n"), argument.getAsInt("np")));
+        ClusterConfiguration configuration = new ClusterConfiguration(argument.get("j"), argument.getAsInt("jp"), argument.get("n"), argument.getAsInt("np"));
+        ClusterClient clusterClient = new ClusterClient(configuration);
+        HMount mount = new HMount(clusterClient);
         HCommandOutput output = mount.execute(argument);
         System.out.println(output.getOutput());
     }

@@ -21,6 +21,7 @@ public class HJobStatTest {
         HCommandOutput commandOutput = new HJobStat().execute(argument);
         System.out.println(JobDetail.formattedHeader());
         System.out.println(commandOutput.getOutput());
+        //AssertHow?
     }
 
     @Test

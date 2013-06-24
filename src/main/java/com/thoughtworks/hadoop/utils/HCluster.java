@@ -35,7 +35,8 @@ public class HCluster implements HCommand {
             String clusterJson = commandOutput.getOutput();
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(clusterJson, JsonObject.class);
-            return new ClusterClient(jsonObject.get("jobTracker").getAsString(), jsonObject.get("jobTrackerPort").getAsInt(), jsonObject.get("nameNode").getAsString(), jsonObject.get("nameNodePort").getAsInt());
+            ClusterConfiguration configuration = new ClusterConfiguration(jsonObject.get("jobTracker").getAsString(), jsonObject.get("jobTrackerPort").getAsInt(), jsonObject.get("nameNode").getAsString(), jsonObject.get("nameNodePort").getAsInt());
+            return new ClusterClient(configuration);
         }
         throw new RuntimeException("Cluster not found. Please mount a cluster before executing any command.");
 

@@ -19,25 +19,20 @@ import java.util.List;
 
 public class ClusterClient {
     public static final String INVALID_JOB_ID = "Invalid Job Id";
-    private String jobTrackerAddress;
-    private String nameNodeAddress;
-    private int jtPortNumber;
-    private int nnPortNumber;
     private JobClient jobClient;
     private DFSClient dfsClient;
+    private ClusterConfiguration configuration;
 
-    public ClusterClient(String jobTrackerAddress, int jtPortNumber, String nameNodeAddress, int nnPortNumber) {
-        this.jobTrackerAddress = jobTrackerAddress;
-        this.jtPortNumber = jtPortNumber;
-        this.nameNodeAddress = nameNodeAddress;
-        this.nnPortNumber = nnPortNumber;
+    public ClusterClient(ClusterConfiguration configuration) {
+        this.configuration = configuration;
         this.jobClient = getJobClient();
         this.dfsClient = getDFSClient();
     }
 
     private JobClient getJobClient() {
         try {
-            return new JobClient(new InetSocketAddress(this.jobTrackerAddress, this.jtPortNumber), new Configuration());
+            return new JobClient(new InetSocketAddress(configuration.getJobTrackerAddress(),
+                    configuration.getJtPortNumber()), new Configuration());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -45,14 +40,14 @@ public class ClusterClient {
 
     private DFSClient getDFSClient() {
         try {
-            return new DFSClient(new InetSocketAddress(this.nameNodeAddress, this.nnPortNumber), new Configuration());
+            return new DFSClient(new InetSocketAddress(configuration.getNameNodeAddress(), configuration.getNnPortNumber()), new Configuration());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Collection<String> getTaskTrackerNames() {
-        ClusterStatus clusterStatus = null;
+        ClusterStatus clusterStatus;
         try {
             clusterStatus = jobClient.getClusterStatus(true);
         } catch (IOException e) {
@@ -62,31 +57,31 @@ public class ClusterClient {
     }
 
     public String getJobTrackerName() {
-        return jobTrackerAddress;
+        return configuration.getJobTrackerAddress();
     }
 
     public String getNameNodeName() {
-        return nameNodeAddress;
+        return configuration.getNameNodeAddress();
     }
 
     public int getJtPortNumber() {
-        return jtPortNumber;
+        return configuration.getJtPortNumber();
     }
 
     public int getNnPortNumber() {
-        return nnPortNumber;
+        return configuration.getNnPortNumber();
     }
 
 
     public Collection<String> getDataNodes() {
-        DatanodeInfo[] datanodeInfos = new DatanodeInfo[0];
+        DatanodeInfo[] dataNodeInfoList;
         List<String> dataNodes = new ArrayList<String>();
         try {
-            datanodeInfos = dfsClient.datanodeReport(FSConstants.DatanodeReportType.ALL);
+            dataNodeInfoList = dfsClient.datanodeReport(FSConstants.DatanodeReportType.ALL);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        for (DatanodeInfo info : datanodeInfos) {
+        for (DatanodeInfo info : dataNodeInfoList) {
             dataNodes.add(info.getHostName());
         }
         return dataNodes;
@@ -95,7 +90,7 @@ public class ClusterClient {
 
     public Collection<JobDetail> getAllJobDetails() {
         Collection<JobDetail> jobDetails = new ArrayList<JobDetail>();
-        JobStatus[] jobStatuses = new JobStatus[0];
+        JobStatus[] jobStatuses;
         try {
             jobStatuses = jobClient.getAllJobs();
             for (JobStatus jobStatus : jobStatuses) {
@@ -111,7 +106,7 @@ public class ClusterClient {
 
     public Collection<JobDetail> getRunningJobDetails() {
         Collection<JobDetail> jobDetails = new ArrayList<JobDetail>();
-        JobStatus[] jobStatuses = new JobStatus[0];
+        JobStatus[] jobStatuses;
         try {
             jobStatuses = jobClient.getAllJobs();
             for (JobStatus jobStatus : jobStatuses) {
@@ -133,7 +128,7 @@ public class ClusterClient {
 
     public Collection<JobDetail> getCompletedJobDetails() {
         Collection<JobDetail> jobDetails = new ArrayList<JobDetail>();
-        JobStatus[] jobStatuses = new JobStatus[0];
+        JobStatus[] jobStatuses;
         try {
             jobStatuses = jobClient.getAllJobs();
             for (JobStatus jobStatus : jobStatuses) {
@@ -146,14 +141,6 @@ public class ClusterClient {
             throw new RuntimeException(e);
         }
         return jobDetails;
-    }
-
-    public RunningJob getJob(JobID jobID) {
-        try {
-            return jobClient.getJob((org.apache.hadoop.mapred.JobID) jobID);
-        } catch (IOException e) {
-            throw new RuntimeException(INVALID_JOB_ID);
-        }
     }
 
     public void killJob(JobID jobID) throws IOException {
@@ -169,6 +156,11 @@ public class ClusterClient {
         // Bad API version; Cannot do anything better; Les Horribles
         String[] args = {"job", "-kill-task", taskAttemptId};
         jobClient.run(args);
+    }
+
+    public TaskDetails getTaskDetails() {
+
+        return new TaskDetails();
     }
 }
 
