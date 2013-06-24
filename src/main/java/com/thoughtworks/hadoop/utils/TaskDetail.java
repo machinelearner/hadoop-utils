@@ -11,9 +11,11 @@ public class TaskDetail {
         this.timesKilled = timesKilled;
     }
 
+
     @Override
     public String toString() {
         String fiveSpaces = "     ";
         return taskId + fiveSpaces + timesFailed + fiveSpaces + timesKilled + "\n";
     }
+
 }

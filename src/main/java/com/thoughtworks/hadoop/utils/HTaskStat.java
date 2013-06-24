@@ -17,7 +17,7 @@ public class HTaskStat implements HCommand {
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
         String jobId = hCommandArgument.get("jid");
-        TaskDetails taskDetails = clusterClient.getTaskDetails();
+        TaskDetails taskDetails = clusterClient.getTaskDetails(jobId);
         HCommandOutput output = new HCommandOutput(HCommandOutput.Result.SUCCESS, taskDetails.toString());
         return output;
     }

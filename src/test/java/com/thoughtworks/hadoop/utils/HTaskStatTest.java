@@ -14,9 +14,12 @@ public class HTaskStatTest {
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.addDetail(new TaskDetail("task_201306121815_0047_m_000000", "1", "0"));
         taskDetails.addDetail(new TaskDetail("task_201306121815_0047_m_000001", "1", "1"));
-        when(clusterClient.getTaskDetails()).thenReturn(taskDetails);
+        String jobId = "job_201306121815_0047";
+        HCommandArgument argument = new HCommandArgument();
+        argument.put("jid", jobId);
+        when(clusterClient.getTaskDetails(jobId)).thenReturn(taskDetails);
         HTaskStat taskStat = new HTaskStat(clusterClient);
-        HCommandOutput output = taskStat.execute(new HCommandArgument());
+        HCommandOutput output = taskStat.execute(argument);
         String actualOutput = output.getOutput();
         String fiveSpaces = "     ";
         String metadata = "Task_id" + fiveSpaces + "Times failed" + fiveSpaces + "Times Killed" + "\n";
