@@ -34,9 +34,8 @@ a much friendlier interaction to the distributed environment which gives the abi
   3.Nodes with Frequent Job Failures
   
   and more..
-  
-  
-  ####Got something we can include? 
+    
+####Got something we can include? 
   Please raise a new issue with "Feature Request" label, add in a precise description and a use case
   we will pick it up from there.
   
