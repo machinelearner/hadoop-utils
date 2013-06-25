@@ -158,7 +158,7 @@ public class ClusterClient {
         jobClient.run(args);
     }
 
-    public TaskDetails getTaskDetails(String jobId) {
+    public TaskDetails getAllTaskDetails(String jobId) {
         String mapTaskURL = getJobTrackerURL() + "/jobfailures.jsp?jobid=" + jobId + "&kind=map";
         String reduceTaskURL = getJobTrackerURL() + "/jobfailures.jsp?jobid=" + jobId + "&kind=reduce";
         TaskDetails mapTaskDetails = new JobDetailsScraper(new FileSource(mapTaskURL)).getTaskDetails();
@@ -170,6 +170,16 @@ public class ClusterClient {
         String jobTrackerAddress = configuration.getJobTrackerAddress();
         String defaultJobTrackerMonitorPort = "50030";
         return "http://" + jobTrackerAddress + ":" + defaultJobTrackerMonitorPort;
+    }
+
+    public TaskDetails getMapTaskDetails(String jobId) {
+        String mapTaskURL = getJobTrackerURL() + "/jobfailures.jsp?jobid=" + jobId + "&kind=map";
+        return new JobDetailsScraper(new FileSource(mapTaskURL)).getTaskDetails();
+    }
+
+    public TaskDetails getReduceTaskDetails(String jobId) {
+        String mapTaskURL = getJobTrackerURL() + "/jobfailures.jsp?jobid=" + jobId + "&kind=reduce";
+        return new JobDetailsScraper(new FileSource(mapTaskURL)).getTaskDetails();
     }
 }
 

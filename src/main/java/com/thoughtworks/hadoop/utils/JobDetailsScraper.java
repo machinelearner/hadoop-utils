@@ -22,10 +22,10 @@ public class JobDetailsScraper {
         HashMap failedTaskCountMap = getTaskCountMap(failedDetailPage);
         HashMap killedTaskCountMap = getTaskCountMap(killedDetailPage);
         Set allKeys = getMergedKeySet(failedTaskCountMap, killedTaskCountMap);
-        return generateAllDetails(failedTaskCountMap, killedTaskCountMap, allKeys);
+        return generateAllTaskDetails(failedTaskCountMap, killedTaskCountMap, allKeys);
     }
 
-    private TaskDetails generateAllDetails(HashMap failedTaskCountMap, HashMap killedTaskCountMap, Set allKeys) {
+    private TaskDetails generateAllTaskDetails(HashMap failedTaskCountMap, HashMap killedTaskCountMap, Set allKeys) {
         Iterator allKeysIterator = allKeys.iterator();
         TaskDetails allTaskDetails = new TaskDetails();
         while (allKeysIterator.hasNext()) {
