@@ -48,12 +48,21 @@ public class HTaskStat implements HCommand {
     public static Options options() {
         Options options = new Options();
         options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
-        options.addOption("u", "super-user", false, "Super User to execute admin commands");
+        options.addOption("u", "super-user", true, "Super User to execute admin commands");
+        options.addOption("jid", "job-id", true, "Job Id");
         options.addOption("a", "all", false, "All Tasks");
         options.addOption("m", "map", false, "Map Tasks");
         options.addOption("r", "reduce", false, "Reduce Tasks");
-        options.addOption("s", "setup", false, "Setup");
-        options.addOption("c", "cleanup", false, "Cleanup");
         return options;
     }
+
+    public static void main(String[] args) {
+        HCommandArgument argument = HCommandArgument.create(args, options());
+        HCluster hCluster = new HCluster();
+        ClusterClient clusterClient = hCluster.getClusterClient(argument);
+        HTaskStat hTaskStat = new HTaskStat(clusterClient);
+        HCommandOutput commandOutput = hTaskStat.execute(argument);
+        System.out.println(commandOutput.getOutput());
+    }
+
 }
