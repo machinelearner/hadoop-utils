@@ -1,6 +1,9 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
+import com.thoughtworks.hadoop.utils.ClusterClient;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.mapreduce.JobID;
 
 import java.io.IOException;
@@ -25,9 +28,9 @@ public class HKill {
         }
     }
 
-    public HCommandOutput execute(HCommandArgument argument) {
+    public HCommandOutput execute(HCommandArgument argument) throws ParseException {
         if (!argument.hasArgument("job") && !argument.hasArgument("task")) {
-            throw new RuntimeException(NO_ARGUMENT_MESSAGE);
+            throw new ParseException(NO_ARGUMENT_MESSAGE);
         }
         applyDefaults(argument);
         HCluster hCluster = new HCluster();
@@ -73,14 +76,21 @@ public class HKill {
         options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
         options.addOption("u", "super-user", true, "Super User to execute admin commands");
         options.addOption("job", "job", true, "Job Id of job to be killed");
-        options.addOption("task-attempt", "task-attempt", true, "Task Attempt Id of task attempt to be killed");
+        options.addOption("attempt", "task-attempt", true, "Task Attempt Id of task attempt to be killed");
         return options;
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, options());
+        HCommandOutput commandOutput = null;
         HKill hKill = new HKill();
-        HCommandOutput commandOutput = hKill.execute(argument);
+        try {
+            HCommandArgument argument = HCommandArgument.create(args, options());
+            commandOutput = hKill.execute(argument);
+        } catch (org.apache.commons.cli.ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("command usage", options());
+            return;
+        }
         System.out.println("Killed " + commandOutput.getOutput());
     }
 

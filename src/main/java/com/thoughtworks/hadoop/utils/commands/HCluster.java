@@ -1,8 +1,12 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.thoughtworks.hadoop.utils.ClusterClient;
+import com.thoughtworks.hadoop.utils.ClusterConfiguration;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -57,7 +61,14 @@ public class HCluster implements HCommand {
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, HCluster.options());
+        HCommandArgument argument = null;
+        try {
+            argument = HCommandArgument.create(args, HCluster.options());
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("commands usage", options());
+            return;
+        }
         HCluster hCluster = new HCluster();
         HCommandOutput output = hCluster.execute(argument);
         System.out.println(output.getOutput());

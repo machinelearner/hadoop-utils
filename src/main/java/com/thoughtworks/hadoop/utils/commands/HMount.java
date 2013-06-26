@@ -1,8 +1,13 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.thoughtworks.hadoop.utils.ClusterClient;
+import com.thoughtworks.hadoop.utils.ClusterConfiguration;
+import com.thoughtworks.hadoop.utils.HostnameParser;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -111,21 +116,36 @@ public class HMount implements HCommand {
     public static Options options() {
         Options options = new Options();
         options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
-        options.addOption("j", "job-tracker", true, "Job Tracker HostName");
-        options.addOption("n", "name-node", true, "Name Node HostName");
-        options.addOption("jp", "jobtracker-port-number", true, "Port Number of Job Tracker");
-        options.addOption("np", "namenode-port-number", true, "Port Number of Name Node");
+        options.addOption("j", "job-tracker", true, "Job Tracker HostName[Required]");
+        options.addOption("n", "name-node", true, "Name Node HostName[Required]");
+        options.addOption("jp", "jobtracker-port-number", true, "Port Number of Job Tracker[Required] ");
+        options.addOption("np", "namenode-port-number", true, "Port Number of Name Node[Required]");
         options.addOption("u", "super-user", true, "Super User to execute admin commands");
         return options;
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, options());
+        HCommandArgument argument = null;
+        try {
+            argument = HCommandArgument.create(args, options());
+            argumentsCheck(argument);
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            System.out.println(e.getMessage());
+            formatter.printHelp("command usage", options());
+            return;
+        }
         handleSuperUserOverride(argument);
         ClusterConfiguration configuration = new ClusterConfiguration(argument.get("j"), argument.getAsInt("jp"), argument.get("n"), argument.getAsInt("np"));
         ClusterClient clusterClient = new ClusterClient(configuration);
         HMount mount = new HMount(clusterClient);
         HCommandOutput output = mount.execute(argument);
         System.out.println(output.getOutput());
+    }
+
+    private static void argumentsCheck(HCommandArgument argument) throws ParseException {
+        if (!argument.hasArgument("j") || !argument.hasArgument("jp") || !argument.hasArgument("n") || !argument.hasArgument("np")) {
+            throw new ParseException("Arguments Missing");
+        }
     }
 }

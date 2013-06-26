@@ -1,6 +1,10 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
+import com.thoughtworks.hadoop.utils.ClusterClient;
+import com.thoughtworks.hadoop.utils.JobDetail;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.ArrayList;
@@ -9,6 +13,11 @@ import java.util.Collection;
 public class HJobStat implements HCommand {
 
     private static final String DIR_OPTION = "f";
+    private ClusterClient clusterClient;
+
+    public HJobStat(ClusterClient clusterClient) {
+        this.clusterClient = clusterClient;
+    }
 
     public Collection<JobDetail> getAllJobDetails(ClusterClient clusterClient) {
         return clusterClient.getAllJobDetails();
@@ -48,8 +57,6 @@ public class HJobStat implements HCommand {
     @Override
     public HCommandOutput execute(HCommandArgument hCommandArgument) {
         applyDefaults(hCommandArgument);
-        HCluster hCluster = new HCluster();
-        ClusterClient clusterClient = hCluster.getClusterClient(hCommandArgument);
         Collection<JobDetail> jobDetails = new ArrayList<JobDetail>();
         if (hCommandArgument.hasArgument("r")) {
             jobDetails = getRunningJobs(clusterClient);
@@ -82,8 +89,17 @@ public class HJobStat implements HCommand {
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, options());
-        HJobStat hJobStat = new HJobStat();
+        HCommandArgument argument = null;
+        try {
+            argument = HCommandArgument.create(args, options());
+        } catch (ParseException e) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp("command usage", options());
+            return;
+        }
+        HCluster hCluster = new HCluster();
+        ClusterClient clusterClient = hCluster.getClusterClient(argument);
+        HJobStat hJobStat = new HJobStat(clusterClient);
         HCommandOutput commandOutput = hJobStat.execute(argument);
         System.out.println(JobDetail.formattedHeader());
         System.out.println(commandOutput.getOutput());

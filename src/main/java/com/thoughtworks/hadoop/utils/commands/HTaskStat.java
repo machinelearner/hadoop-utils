@@ -1,6 +1,10 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
+import com.thoughtworks.hadoop.utils.ClusterClient;
+import com.thoughtworks.hadoop.utils.TaskDetails;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 
 public class HTaskStat implements HCommand {
     private ClusterClient clusterClient;
@@ -30,9 +34,12 @@ public class HTaskStat implements HCommand {
     }
 
     @Override
-    public HCommandOutput execute(HCommandArgument hCommandArgument) {
+    public HCommandOutput execute(HCommandArgument hCommandArgument) throws ParseException {
         applyDefaults(hCommandArgument);
         String jobId = hCommandArgument.get("jid");
+        if (jobId == null) {
+            throw new ParseException("No Job ID Given");
+        }
         TaskDetails taskDetails = new TaskDetails();
 
         if (hCommandArgument.hasArgument("a")) {
@@ -49,20 +56,38 @@ public class HTaskStat implements HCommand {
         Options options = new Options();
         options.addOption(DIR_OPTION, "home-dir", true, "Home dir to store hadoop Util configurations");
         options.addOption("u", "super-user", true, "Super User to execute admin commands");
-        options.addOption("jid", "job-id", true, "Job Id");
-        options.addOption("a", "all", false, "All Tasks");
+        options.addOption("jid", "job-id", true, "Job Id[Required]");
+        options.addOption("a", "all", false, "All Tasks[Default]");
         options.addOption("m", "map", false, "Map Tasks");
         options.addOption("r", "reduce", false, "Reduce Tasks");
         return options;
     }
 
     public static void main(String[] args) {
-        HCommandArgument argument = HCommandArgument.create(args, options());
         HCluster hCluster = new HCluster();
+        HCommandArgument argument = null;
+        try {
+            argument = HCommandArgument.create(args, options());
+        } catch (ParseException e) {
+            printCommandUsage();
+            return;
+        }
         ClusterClient clusterClient = hCluster.getClusterClient(argument);
         HTaskStat hTaskStat = new HTaskStat(clusterClient);
-        HCommandOutput commandOutput = hTaskStat.execute(argument);
+        HCommandOutput commandOutput = new HCommandOutput(HCommandOutput.Result.FAILURE, "Unsuccessful Execution");
+        try {
+            commandOutput = hTaskStat.execute(argument);
+        } catch (ParseException e) {
+            printCommandUsage();
+            return;
+        }
         System.out.println(commandOutput.getOutput());
     }
 
+    private static void printCommandUsage() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp("command usage", options());
+    }
+
 }
+

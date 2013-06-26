@@ -1,4 +1,4 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
 
 import org.apache.commons.cli.*;
@@ -17,18 +17,14 @@ public class HCommandArgument {
         arguments.put(key, value);
     }
 
-    public static HCommandArgument create(String[] args, Options options) {
+    public static HCommandArgument create(String[] args, Options options) throws ParseException {
         HCommandArgument hCommandArgument = new HCommandArgument();
         CommandLineParser parser = new BasicParser();
         CommandLine line;
-        try {
-            // parse the command line arguments
-            line = parser.parse(options, args);
-            for (Option option : line.getOptions()) {
-                hCommandArgument.put(option.getOpt(), option.getValue());
-            }
-        } catch (org.apache.commons.cli.ParseException e) {
-            throw new RuntimeException(e);
+        // parse the command line arguments
+        line = parser.parse(options, args);
+        for (Option option : line.getOptions()) {
+            hCommandArgument.put(option.getOpt(), option.getValue());
         }
         return hCommandArgument;
     }

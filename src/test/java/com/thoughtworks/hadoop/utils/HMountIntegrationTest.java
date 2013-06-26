@@ -1,5 +1,7 @@
 package com.thoughtworks.hadoop.utils;
 
+import com.thoughtworks.hadoop.utils.commands.HCommandArgument;
+import com.thoughtworks.hadoop.utils.commands.HMount;
 import org.junit.Test;
 
 public class HMountIntegrationTest {

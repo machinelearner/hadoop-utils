@@ -1,6 +1,6 @@
 package com.thoughtworks.hadoop.utils;
 
-import junit.framework.Assert;
+import com.thoughtworks.hadoop.utils.commands.HMount;
 import org.junit.Test;
 
 import java.io.IOException;

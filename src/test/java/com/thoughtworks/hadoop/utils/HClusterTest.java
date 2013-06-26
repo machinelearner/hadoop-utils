@@ -2,6 +2,9 @@ package com.thoughtworks.hadoop.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.thoughtworks.hadoop.utils.commands.HCluster;
+import com.thoughtworks.hadoop.utils.commands.HCommandArgument;
+import com.thoughtworks.hadoop.utils.commands.HCommandOutput;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;

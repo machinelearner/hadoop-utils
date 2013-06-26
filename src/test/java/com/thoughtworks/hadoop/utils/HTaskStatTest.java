@@ -1,5 +1,9 @@
 package com.thoughtworks.hadoop.utils;
 
+import com.thoughtworks.hadoop.utils.commands.HCommandArgument;
+import com.thoughtworks.hadoop.utils.commands.HCommandOutput;
+import com.thoughtworks.hadoop.utils.commands.HTaskStat;
+import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -9,7 +13,7 @@ import static org.mockito.Mockito.when;
 public class HTaskStatTest {
 
     @Test
-    public void shouldGiveListOfTasksForAJob() {
+    public void shouldGiveListOfTasksForAJob() throws ParseException {
         ClusterClient clusterClient = mock(ClusterClient.class);
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.addDetail(new TaskDetail("task_201306121815_0047_m_000000", "1", "0"));
@@ -33,7 +37,7 @@ public class HTaskStatTest {
     }
 
     @Test
-    public void shouldGiveListOfMapTasksForAJob() {
+    public void shouldGiveListOfMapTasksForAJob() throws ParseException {
         ClusterClient clusterClient = mock(ClusterClient.class);
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.addDetail(new TaskDetail("task_201306121815_0047_m_000000", "1", "0"));
@@ -58,7 +62,7 @@ public class HTaskStatTest {
     }
 
     @Test
-    public void shouldGetEmptyReduceTasksForAJobWhenItDoesNotExist() {
+    public void shouldGetEmptyReduceTasksForAJobWhenItDoesNotExist() throws ParseException {
         ClusterClient clusterClient = mock(ClusterClient.class);
         TaskDetails taskDetails = new TaskDetails();
         String jobId = "job_201306121815_0047";
@@ -78,7 +82,7 @@ public class HTaskStatTest {
     }
 
     @Test
-    public void shouldGiveListOfReduceTasksForAJob() {
+    public void shouldGiveListOfReduceTasksForAJob() throws ParseException {
         ClusterClient clusterClient = mock(ClusterClient.class);
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.addDetail(new TaskDetail("task_201306121815_0047_m_000000", "1", "0"));

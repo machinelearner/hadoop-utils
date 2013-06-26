@@ -3,6 +3,9 @@ package com.thoughtworks.hadoop.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.thoughtworks.hadoop.utils.commands.HCommandArgument;
+import com.thoughtworks.hadoop.utils.commands.HCommandOutput;
+import com.thoughtworks.hadoop.utils.commands.HMount;
 import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;

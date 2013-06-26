@@ -1,4 +1,4 @@
-package com.thoughtworks.hadoop.utils;
+package com.thoughtworks.hadoop.utils.commands;
 
 public class HCommandOutput {
 
@@ -25,7 +25,7 @@ public class HCommandOutput {
         return false;
     }
 
-    static enum Result {
+    public static enum Result {
         SUCCESS, FAILURE
     }
 
