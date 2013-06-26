@@ -11,30 +11,31 @@ In this project, we attempt to give it a UNIX/Linux like command line utility wh
 a much friendlier interaction to the distributed environment which gives the ability to combine the goodness of nix shell with hadoop client API.
 
 ####Target user
-  1.Cluster Admin
+* Cluster Admin
+* Users Monitoring Jobs
+* Any one who would rather stick to *nix way of doing things than the web UI interaction
+ 
+ 
+###Installation and Usage
   
-  2.Users Monitoring Jobs
-  
-  3.Any one who would rather stick to *nix way of doing things than the web UI interaction
-  
+  [Installation and Usage Wiki Page](https://github.com/npramod05/hadoop-utils/wiki/Installation-and-Usage)
+ 
+ 
 ####Current Feature List
-  1.Mount a cluster - Equivalent to mounting a device, get the context of a cluster
-  
-  2.Job Status - Equivalent to ps, list jobs and their details
-  
-  3.Task Status - for a given job list different kinds of tasks and their execution status(number of times failed/killed)
-  
-  4.Kill - kill a job or task attempt(not a task, as this is not supported by the version of hadoop being used)
+* Mount a cluster - Equivalent to mounting a device, get the context of a cluster  
+* Job Status - Equivalent to ps, list jobs and their details  
+* Task Status - for a given job list different kinds of tasks and their execution status(number of times failed/killed)
+* Kill - kill a job or task attempt(not a task, as this is not supported by the version of hadoop being used)
+
 
 ####More Utils to come
-  1.Disk Usage in Cluster - Equivalent to du
-  
-  2.Memory and CPU usage for a given Job
-  
-  3.Nodes with Frequent Job Failures
+* Disk Usage in Cluster - Equivalent to du
+* Memory and CPU usage for a given Job
+* Nodes with Frequent Job Failures
   
   and more..
-    
+
+
 ####Got something we can include? 
   Please raise a new issue with "Feature Request" label, add in a precise description and a use case
   we will pick it up from there.
