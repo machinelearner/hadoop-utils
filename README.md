@@ -40,3 +40,11 @@ a much friendlier interaction to the distributed environment which gives the abi
   we will pick it up from there.
   
   Many more things to follow, keep an eye on the repo.
+  
+
+
+## Contributors
+
+* Srihari Srinivasan([@systems_we_make](https://twitter.com/systems_we_make))
+* Hemanth Yamijala([@yhemanth](http://twitter.com/yhemanth))
+* Pramod N([@machinelearner](https://twitter.com/machinelearner))
