@@ -74,14 +74,13 @@ public class HTaskStat implements HCommand {
         }
         ClusterClient clusterClient = hCluster.getClusterClient(argument);
         HTaskStat hTaskStat = new HTaskStat(clusterClient);
-        HCommandOutput commandOutput = new HCommandOutput(HCommandOutput.Result.FAILURE, "Unsuccessful Execution");
+        HCommandOutput commandOutput;
         try {
             commandOutput = hTaskStat.execute(argument);
+            System.out.println(commandOutput.getOutput());
         } catch (ParseException e) {
             printCommandUsage();
-            return;
         }
-        System.out.println(commandOutput.getOutput());
     }
 
     private static void printCommandUsage() {
