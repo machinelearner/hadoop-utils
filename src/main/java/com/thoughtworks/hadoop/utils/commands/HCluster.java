@@ -30,10 +30,14 @@ public class HCluster implements HCommand {
         } catch (IOException e) {
             return new HCommandOutput(HCommandOutput.Result.FAILURE, e.getMessage());
         }
+        json = prettyJson(json);
+        return new HCommandOutput(HCommandOutput.Result.SUCCESS, json);
+    }
+
+    private String prettyJson(String json) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
-        json = gson.toJson(jsonObject);
-        return new HCommandOutput(HCommandOutput.Result.SUCCESS, json);
+        return gson.toJson(jsonObject);
     }
 
     public ClusterClient getClusterClient(HCommandArgument hCommandArgument) {

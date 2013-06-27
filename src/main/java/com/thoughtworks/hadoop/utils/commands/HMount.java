@@ -1,6 +1,7 @@
 package com.thoughtworks.hadoop.utils.commands;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.thoughtworks.hadoop.utils.ClusterClient;
 import com.thoughtworks.hadoop.utils.ClusterConfiguration;
@@ -55,8 +56,15 @@ public class HMount implements HCommand {
         JsonObject allDetails = allDetailsAsJson(jobTracker, jtPortNumber, taskTrackerNames, nameNode, nnPortNumber, dataNodes);
         String clusterDetails = allDetails.toString();
         writeClusterDetails(clusterDetails, applyDefaults(hCommandArgument));
+        clusterDetails = prettyJson(clusterDetails);
         return new HCommandOutput(HCommandOutput.Result.SUCCESS, clusterDetails);
 
+    }
+
+    private String prettyJson(String json) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+        return gson.toJson(jsonObject);
     }
 
     private static void handleSuperUserOverride(HCommandArgument hCommandArgument) {
