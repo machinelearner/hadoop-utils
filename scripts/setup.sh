@@ -16,6 +16,6 @@ mvn clean compile assembly:single
 cd - >/dev/null
 JAR_PATH="$HADOOP_UTILS_PATH/target/hadoop-utils-1.0-SNAPSHOT-jar-with-dependencies.jar"
 COMMAND_PATH="$HADOOP_UTILS_PATH/scripts/bin"
-export CLASSPATH=${CLASSPATH}:$JAR_PATH
-export PATH=${PATH}:$COMMAND_PATH
+export CLASSPATH="${CLASSPATH}:$JAR_PATH"
+export PATH="${PATH}:$COMMAND_PATH"
 
