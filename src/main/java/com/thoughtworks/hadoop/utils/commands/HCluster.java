@@ -37,7 +37,6 @@ public class HCluster implements HCommand {
     }
 
     public ClusterClient getClusterClient(HCommandArgument hCommandArgument) {
-        //TODO functional
         HCommandOutput commandOutput = execute(hCommandArgument);
         if (commandOutput.isSuccess()) {
             String clusterJson = commandOutput.getOutput();

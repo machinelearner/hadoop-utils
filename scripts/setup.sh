@@ -8,8 +8,8 @@ fi
 
 pathToFile="`dirname $0`/../"
 cd $pathToFile
-cd - >/dev/null
 export HADOOP_UTILS_PATH=`pwd`
+cd - >/dev/null
 echo $HADOOP_UTILS_PATH
 cd $HADOOP_UTILS_PATH
 mvn clean compile assembly:single
