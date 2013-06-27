@@ -1,2 +1,3 @@
 #!/bin/sh
+CLASSPATH=$JAVA_HOME/lib/hadoop-utils.jar
 $JAVA_HOME/bin/java -cp ${CLASSPATH} com.thoughtworks.hadoop.utils.commands.HTaskStat $@
