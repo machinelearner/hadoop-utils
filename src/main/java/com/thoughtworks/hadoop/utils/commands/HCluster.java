@@ -1,6 +1,7 @@
 package com.thoughtworks.hadoop.utils.commands;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.thoughtworks.hadoop.utils.ClusterClient;
 import com.thoughtworks.hadoop.utils.ClusterConfiguration;
@@ -27,8 +28,11 @@ public class HCluster implements HCommand {
         try {
             json = FileUtils.readFileToString(new File(file));
         } catch (IOException e) {
-            return new HCommandOutput(HCommandOutput.Result.FAILURE, "");
+            return new HCommandOutput(HCommandOutput.Result.FAILURE, e.getMessage());
         }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject jsonObject = gson.fromJson(json, JsonObject.class);
+        json = gson.toJson(jsonObject);
         return new HCommandOutput(HCommandOutput.Result.SUCCESS, json);
     }
 
