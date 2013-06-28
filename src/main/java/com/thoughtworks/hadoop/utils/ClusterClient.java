@@ -88,14 +88,14 @@ public class ClusterClient {
 
     }
 
-    public Collection<JobDetail> getAllJobDetails() {
-        Collection<JobDetail> jobDetails = new ArrayList<JobDetail>();
+    public JobDetails getAllJobDetails() {
+        JobDetails jobDetails = new JobDetails();
         JobStatus[] jobStatuses;
         try {
             jobStatuses = jobClient.getAllJobs();
             for (JobStatus jobStatus : jobStatuses) {
                 RunningJob job = jobClient.getJob(jobStatus.getJobID());
-                jobDetails.add(JobDetail.create(job, jobStatus));
+                jobDetails.addDetail(JobDetail.create(job, jobStatus));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

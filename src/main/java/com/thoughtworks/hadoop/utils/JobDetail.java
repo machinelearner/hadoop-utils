@@ -23,7 +23,7 @@ public class JobDetail {
     private String state;
     private static final String DELIMITER_STRING = "     ";
 
-    private JobDetail(JobID id, String jobName, JobPriority priority, String user, float mapProgress, float reduceProgress, long startTime, String state) {
+    public JobDetail(JobID id, String jobName, JobPriority priority, String user, float mapProgress, float reduceProgress, long startTime, String state) {
         this.id = id;
         this.jobName = jobName;
         this.priority = priority;
